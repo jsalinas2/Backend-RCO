@@ -21,6 +21,7 @@ public interface AppointmentMapper {
 
     @Mapping(target = "service", expression = "java(appointment.getService().getName())")
     @Mapping(target = "patientName", expression = "java(fullName(appointment.getPatient()))")
+    @Mapping(target = "patientDni", expression = "java(appointment.getPatient().getProfile().getDni())")
     @Mapping(target = "dentistName", expression = "java(fullName(appointment.getDentist()))")
     AppointmentAgendaDTO toAgendaDTO(Appointment appointment);
     

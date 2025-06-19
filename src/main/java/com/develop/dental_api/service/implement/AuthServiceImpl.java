@@ -1,11 +1,17 @@
 package com.develop.dental_api.service.implement;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import com.develop.dental_api.model.dto.ChangePasswordDTO;
 import com.develop.dental_api.model.dto.LoginRequestDTO;
@@ -13,6 +19,7 @@ import com.develop.dental_api.model.dto.LoginResponseDTO;
 import com.develop.dental_api.model.dto.MessageResponseDTO;
 import com.develop.dental_api.model.dto.RegisterUserRequestDTO;
 import com.develop.dental_api.model.dto.RegisterUserResponseDTO;
+import com.develop.dental_api.model.dto.ResetPasswordDTO;
 import com.develop.dental_api.model.entity.ClinicalRecord;
 import com.develop.dental_api.model.entity.Profile;
 import com.develop.dental_api.model.entity.User;
@@ -38,6 +45,13 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final JavaMailSender mailSender;
+    
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
+    @Value("${app.frontend.url}")
+    private String url;
 
     @Override
     public RegisterUserResponseDTO register(RegisterUserRequestDTO dto) {
@@ -93,13 +107,78 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public MessageResponseDTO sendRecoveryEmail(String email) {
-        // Simulación
-        return new MessageResponseDTO("Se envió un correo para recuperar la contraseña");
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("No existe usuario con ese email"));
+
+        // Generar token temporal
+        String recoveryToken = generateRecoveryToken();
+        
+        // Guardar token en usuario
+        user.setRecoveryToken(recoveryToken);
+        user.setRecoveryTokenExpiry(LocalDateTime.now().plusHours(1)); // Token válido por 1 hora
+        userRepository.save(user);
+
+        // Enviar email
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(email);
+        message.setSubject("Recuperación de Contraseña");
+        message.setText("Para recuperar tu contraseña, ingresa al siguiente enlace:\n" +
+                url + "/reset-password?token=" + recoveryToken);
+
+        mailSender.send(message);
+
+        return new MessageResponseDTO("Se ha enviado un correo con las instrucciones para recuperar tu contraseña");
+    }
+
+    private String generateRecoveryToken() {
+        return UUID.randomUUID().toString();
     }
 
     @Override
     public MessageResponseDTO changePassword(ChangePasswordDTO dto) {
-        // Simulación
-        return new MessageResponseDTO("Contraseña actualizada");
+        // Obtener el usuario autenticado (asumiendo que tienes SecurityContextHolder configurado)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Verificar la contraseña actual
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("La contraseña actual es incorrecta");
+        }
+
+        // Validar que la nueva contraseña no sea igual a la actual
+        if (passwordEncoder.matches(dto.getNewPassword(), user.getPassword())) {
+            throw new RuntimeException("La nueva contraseña debe ser diferente a la actual");
+        }
+
+        // Encriptar y guardar la nueva contraseña
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+
+        return new MessageResponseDTO("Contraseña actualizada correctamente");
+    }
+
+    @Override
+    public MessageResponseDTO resetPassword(ResetPasswordDTO dto) {
+        User user = userRepository.findByRecoveryToken(dto.getToken())
+                .orElseThrow(() -> new RuntimeException("Token inválido o expirado"));
+
+        // Verificar si el token ha expirado
+        if (user.getRecoveryTokenExpiry().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("El token ha expirado");
+        }
+
+        // Actualizar contraseña
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        // Limpiar token de recuperación
+        user.setRecoveryToken(null);
+        user.setRecoveryTokenExpiry(null);
+        
+        userRepository.save(user);
+
+        return new MessageResponseDTO("Contraseña actualizada correctamente");
     }
 }

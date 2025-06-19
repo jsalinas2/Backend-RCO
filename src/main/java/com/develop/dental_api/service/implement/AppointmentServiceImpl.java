@@ -17,11 +17,16 @@ import com.develop.dental_api.model.dto.MessageResponseDTO;
 import com.develop.dental_api.model.dto.TimeSlotDTO;
 import com.develop.dental_api.model.entity.Appointment;
 import com.develop.dental_api.model.entity.Availability;
+import com.develop.dental_api.model.entity.ClinicalRecord;
+import com.develop.dental_api.model.entity.TreatmentDone;
 import com.develop.dental_api.model.entity.User;
+import com.develop.dental_api.model.enums.AppointmentStatus;
 import com.develop.dental_api.model.mapper.AppointmentMapper;
 import com.develop.dental_api.repository.AppointmentRepository;
 import com.develop.dental_api.repository.AvailabilityRepository;
+import com.develop.dental_api.repository.ClinicalRecordRepository;
 import com.develop.dental_api.repository.ServiceRepository;
+import com.develop.dental_api.repository.TreatmentDoneRepository;
 import com.develop.dental_api.repository.UserRepository;
 import com.develop.dental_api.service.AppointmentService;
 
@@ -30,12 +35,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
-
+    
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
     private final AppointmentMapper appointmentMapper;
     private final ServiceRepository serviceRepository;
     private final AvailabilityRepository availabilityRepository;
+    private final ClinicalRecordRepository clinicalRecordRepository;
+    private final TreatmentDoneRepository treatmentDoneRepository;
 
     @Override
     public AppointmentResponseDTO createAppointment(AppointmentRequestDTO dto) {
@@ -138,13 +145,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<AppointmentAgendaDTO> getAgendaForUser(LocalDate date, Integer userId) {
         User dentist = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-    
+
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(LocalTime.MAX); // 23:59:59.999999999
     
         List<Appointment> appointments = appointmentRepository
                 .findByDentistAndAppointmentDateBetween(dentist, startOfDay, endOfDay);
-    
+
         return appointments.stream()
                 .map(appointmentMapper::toAgendaDTO)
                 .toList();
@@ -159,5 +166,31 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setAppointmentDate(newDate);
         appointmentRepository.save(appointment);
         return new MessageResponseDTO("Cita reprogramada");
+    }
+
+    @Override
+    public MessageResponseDTO completeAppointment(Integer appointmentId, String observations) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+    
+        // Actualizar estado de la cita
+        appointment.setStatus(AppointmentStatus.COMPLETED.toString());
+        appointmentRepository.save(appointment);
+        
+        // Crear tratamiento realizado
+        ClinicalRecord clinicalRecord = clinicalRecordRepository.findByUser(appointment.getPatient())
+                .orElseThrow(() -> new RuntimeException("Historial clínico no encontrado"));
+                
+        TreatmentDone treatmentDone = new TreatmentDone();
+        treatmentDone.setClinicalRecord(clinicalRecord);
+        treatmentDone.setService(appointment.getService());
+        treatmentDone.setTreatmentDate(appointment.getAppointmentDate().toLocalDate());
+        treatmentDone.setStatus("COMPLETED");
+        treatmentDone.setObservations(observations);
+        treatmentDone.setCreatedAt(LocalDateTime.now());
+        
+        treatmentDoneRepository.save(treatmentDone);
+        
+        return new MessageResponseDTO("Cita marcada como completada y tratamiento registrado");
     }
 }

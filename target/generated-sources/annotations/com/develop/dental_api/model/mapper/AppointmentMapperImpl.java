@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-08T20:35:07-0500",
+    date = "2025-06-19T13:42:59-0500",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Eclipse Adoptium)"
 )
 @Component
@@ -52,6 +52,7 @@ public class AppointmentMapperImpl implements AppointmentMapper {
 
         appointmentAgendaDTO.setService( appointment.getService().getName() );
         appointmentAgendaDTO.setPatientName( fullName(appointment.getPatient()) );
+        appointmentAgendaDTO.setPatientDni( appointment.getPatient().getProfile().getDni() );
         appointmentAgendaDTO.setDentistName( fullName(appointment.getDentist()) );
 
         return appointmentAgendaDTO;

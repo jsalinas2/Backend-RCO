@@ -5,12 +5,13 @@ import com.develop.dental_api.model.dto.PaymentRequestDTO;
 import com.develop.dental_api.model.dto.UserPaymentDTO;
 import com.develop.dental_api.model.entity.Appointment;
 import com.develop.dental_api.model.entity.Payment;
+import com.develop.dental_api.model.entity.Service;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-08T20:35:08-0500",
+    date = "2025-06-19T13:42:59-0500",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Eclipse Adoptium)"
 )
 @Component
@@ -63,6 +64,7 @@ public class PaymentMapperImpl implements PaymentMapper {
 
         userPaymentDTO.setPaymentId( payment.getPaymentId() );
         userPaymentDTO.setAppointmentId( paymentAppointmentAppointmentId( payment ) );
+        userPaymentDTO.setServiceName( paymentAppointmentServiceName( payment ) );
         userPaymentDTO.setAmount( payment.getAmount() );
         userPaymentDTO.setPaymentDate( payment.getPaymentDate() );
         userPaymentDTO.setStatus( payment.getStatus() );
@@ -76,5 +78,17 @@ public class PaymentMapperImpl implements PaymentMapper {
             return null;
         }
         return appointment.getAppointmentId();
+    }
+
+    private String paymentAppointmentServiceName(Payment payment) {
+        Appointment appointment = payment.getAppointment();
+        if ( appointment == null ) {
+            return null;
+        }
+        Service service = appointment.getService();
+        if ( service == null ) {
+            return null;
+        }
+        return service.getName();
     }
 }

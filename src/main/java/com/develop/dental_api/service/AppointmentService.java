@@ -20,4 +20,6 @@ public interface AppointmentService {
     MessageResponseDTO reschedule(Integer appointmentId, LocalDateTime newDate);
 
     List<TimeSlotDTO> getAvailableSlots(User dentist, LocalDate date);
+
+    MessageResponseDTO completeAppointment(Integer appointmentId, String observations);
 }

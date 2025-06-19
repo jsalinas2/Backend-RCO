@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.develop.dental_api.model.dto.AppointmentAgendaDTO;
 import com.develop.dental_api.model.dto.AppointmentRequestDTO;
 import com.develop.dental_api.model.dto.AppointmentResponseDTO;
+import com.develop.dental_api.model.dto.CompleteAppointmentDTO;
 import com.develop.dental_api.model.dto.MessageResponseDTO;
 import com.develop.dental_api.model.dto.RescheduleAppointmentDTO;
 import com.develop.dental_api.model.dto.TimeSlotDTO;
@@ -67,4 +68,10 @@ public class AppointmentController {
     return ResponseEntity.ok(slots);
 }
 
+    @PutMapping("/{appointment_id}/complete")
+    public ResponseEntity<MessageResponseDTO> completeAppointment(
+            @PathVariable Integer appointment_id,
+            @RequestBody CompleteAppointmentDTO request) {
+        return ResponseEntity.ok(appointmentService.completeAppointment(appointment_id, request.getObservations()));
+    }
 }

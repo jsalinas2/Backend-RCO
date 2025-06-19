@@ -11,6 +11,7 @@ public class UserProfileDTO {
     private String lastName;
     private String phone;
     private LocalDate birthDate;
+    private String email;
     private String dni;
     private String role;
 }

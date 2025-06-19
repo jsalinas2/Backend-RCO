@@ -1,7 +1,9 @@
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\api\AppointmentController.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\api\AuthController.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\api\ClinicalRecordController.java
+C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\api\ConfigTestController.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\api\PaymentController.java
+C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\api\PdfController.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\api\UserController.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\config\OpenApiConfig.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\config\SecurityConfig.java
@@ -11,8 +13,10 @@ C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\AppointmentRequestDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\AppointmentResponseDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\ChangePasswordDTO.java
+C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\ClinicalRecordCompleteDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\ClinicalRecordDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\ClinicalRecordRequestDTO.java
+C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\CompleteAppointmentDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\ForgotPasswordDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\LoginRequestDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\LoginResponseDTO.java
@@ -23,11 +27,15 @@ C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\RegisterUserRequestDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\RegisterUserResponseDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\RescheduleAppointmentDTO.java
+C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\ResetPasswordDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\TimeSlotDTO.java
+C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\TreatmentDoneDTO.java
+C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\UpdateClinicalRecordDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\UpdateProfileDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\UserAppointmentDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\UserLoginDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\UserPaymentDTO.java
+C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\UserPaymentHistoryDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\dto\UserProfileDTO.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\entity\Appointment.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\entity\Availability.java
@@ -37,6 +45,7 @@ C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\entity\Service.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\entity\TreatmentDone.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\entity\User.java
+C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\enums\AppointmentStatus.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\enums\Role.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\mapper\AppointmentMapper.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\model\mapper\ClinicalRecordMapper.java
@@ -63,4 +72,5 @@ C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\service\implement\PaymentServiceImpl.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\service\implement\UserServiceImpl.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\service\PaymentService.java
+C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\service\PdfGeneratorService.java
 C:\Users\josep\Downloads\GitAcount2\Backend-RCO\src\main\java\com\develop\dental_api\service\UserService.java

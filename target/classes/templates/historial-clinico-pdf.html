@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Historial Clínico</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 2cm;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 21cm;
+      margin: 0 auto;
+    }
+    .document-title {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin: 20px 0;
+      color: #333;
+      text-transform: uppercase;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #00a8e8;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+    .patient-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    .patient-info-item {
+      flex: 1 1 45%;
+      min-width: 200px;
+    }
+    .patient-info-label {
+      font-weight: bold;
+      font-size: 12px;
+      color: #666;
+    }
+    .patient-info-value {
+      font-size: 14px;
+    }
+    .content-box {
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    .treatment-item {
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed #ddd;
+    }
+    .treatment-item:last-child {
+      border-bottom: none;
+    }
+    .treatment-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .treatment-title {
+      font-weight: bold;
+    }
+    .treatment-date {
+      color: #666;
+      font-size: 12px;
+    }
+    .treatment-details {
+      font-size: 13px;
+      color: #444;
+    }
+    .status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .status-completed {
+      background-color: #e6f7e6;
+      color: #2e7d32;
+    }
+    .status-pending {
+      background-color: #fff8e1;
+      color: #f57f17;
+    }
+    .status-in-progress {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+    .footer {
+      margin-top: 30px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+      font-size: 10px;
+      color: #666;
+      text-align: center;
+    }
+    .allergy-item {
+      background-color: #ffebee;
+      border-left: 3px solid #f44336;
+      padding: 5px 10px;
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+    .evolution-note {
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-left: 3px solid #00a8e8;
+      margin-bottom: 10px;
+    }
+    .evolution-date {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 3px;
+    }
+    .evolution-text {
+      font-size: 13px;
+    }
+    .patient-info-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 10px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+    .patient-info-table td {
+        width: 50%;
+        padding: 10px;
+        vertical-align: top;
+    }
+    .patient-info-cell-label {
+        font-weight: bold;
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 5px;
+    }
+    .patient-info-cell-value {
+        font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="document-title">Historial Clínico Odontologico</div>
+
+    <div class="section">
+      <table class="patient-info-table">
+        <tr>
+            <td>
+                <div class="patient-info-cell-label">Nombre completo:</div>
+                <div class="patient-info-cell-value" th:text="${user.profile.firstName + ' ' + user.profile.lastName}"></div>
+            </td>
+            <td>
+                <div class="patient-info-cell-label">DNI:</div>
+                <div class="patient-info-cell-value" th:text="${user.profile.dni}"></div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="patient-info-cell-label">Fecha de nacimiento:</div>
+                <div class="patient-info-cell-value" th:text="${#temporals.format(user.profile.birthDate, 'dd/MM/yyyy')}"></div>
+            </td>
+            <td>
+                <div class="patient-info-cell-label">Teléfono:</div>
+                <div class="patient-info-cell-value" th:text="${user.profile.phone}"></div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="patient-info-cell-label">Fecha de emisión:</div>
+                <div class="patient-info-cell-value" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}"></div>
+            </td>
+            <td>
+                <div class="patient-info-cell-label">Historial Nº:</div>
+                <div class="patient-info-cell-value" th:text="'HC-' + ${clinicalRecord.clinicalId}"></div>
+            </td>
+        </tr>
+    </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Historia Médica</div>
+      <div class="content-box" th:text="${clinicalRecord.medicalHistory ?: 'Sin registros de historia médica.'}">
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Historia Familiar</div>
+      <div class="content-box" th:text="${clinicalRecord.familyHistory ?: 'Sin registros de historia familiar.'}">
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Alergias</div>
+      <div class="content-box">
+        <div th:if="${clinicalRecord.allergies != null and clinicalRecord.allergies != ''}" 
+             class="allergy-item" th:text="${clinicalRecord.allergies}">
+        </div>
+        <p th:unless="${clinicalRecord.allergies != null and clinicalRecord.allergies != ''}">
+          No se han registrado alergias.
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Tratamientos Realizados</div>
+      <div class="content-box">
+        <div th:if="${not #lists.isEmpty(clinicalRecord.treatmentsDone)}">
+          <div th:each="treatment : ${clinicalRecord.treatmentsDone}" class="treatment-item">
+            <div class="treatment-header">
+              <div class="treatment-title" th:text="${treatment.service.name}"></div>
+              <div class="treatment-date" th:text="${#temporals.format(treatment.treatmentDate, 'dd/MM/yyyy')}"></div>
+            </div>
+            <div class="treatment-details" th:text="${treatment.observations ?: 'Sin observaciones registradas.'}">
+            </div>
+            <div style="margin-top: 5px;">
+              <span class="status" th:classappend="'status-' + ${#strings.toLowerCase(treatment.status)}"
+                    th:text="${treatment.status}">
+              </span>
+            </div>
+          </div>
+        </div>
+        <p th:if="${#lists.isEmpty(clinicalRecord.treatmentsDone)}">No hay tratamientos registrados.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Notas de Evolución</div>
+      <div class="content-box" th:text="${clinicalRecord.evolutionNotes ?: 'No hay notas de evolución registradas.'}">
+      </div>
+    </div>
+
+    <div class="footer">
+      Este documento es confidencial y contiene información médica protegida. 
+      La reproducción o distribución no autorizada está prohibida.<br />
+      © <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}"></span> DentalCare - Todos los derechos reservados.
+    </div>
+
+  </div>
+</body>
+</html>

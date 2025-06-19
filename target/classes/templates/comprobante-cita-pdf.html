@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Comprobante de Cita</title>
+  <style>
+    @page {
+        size: A5;
+        margin: 1cm;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+      width: 12cm;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 12cm;
+      margin: 0 auto;
+    }
+    .document-title {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin: 10px 0;
+      color: #333;
+      text-transform: uppercase;
+    }
+    .document-subtitle {
+      font-size: 14px;
+      text-align: center;
+      margin: -10px 0 20px;
+      color: #666;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #00a8e8;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+    .info-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .info-item {
+      flex: 1 1 45%;
+      min-width: 200px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    .info-label {
+      font-weight: bold;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 3px;
+    }
+    .info-value {
+      font-size: 12px;
+    }
+    .appointment-details {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px dashed #eee;
+    }
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+    .detail-label {
+      font-weight: bold;
+      color: #555;
+    }
+    .detail-value {
+      text-align: right;
+    }
+    .payment-info {
+      background-color: #f5f5f5;
+      border-radius: 5px;
+      padding: 5px;
+    }
+    .payment-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+    }
+    .payment-label {
+      color: #555;
+    }
+    .payment-value {
+      font-weight: bold;
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      margin-top: 10px;
+      border-top: 2px solid #ddd;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .notes {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #fff8e1;
+      border-left: 3px solid #ffc107;
+      font-size: 11px;
+    }
+    .notes-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .footer {
+      margin-top: 30px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+      font-size: 10px;
+      color: #666;
+      text-align: center;
+    }
+    .appointment-table {
+        width: 100%;
+        border-collapse: collapse;
+
+    }
+    .appointment-table tr {
+        border-bottom: 1px dashed #eee;
+    }
+    .appointment-table tr:last-child {
+        border-bottom: none;
+    }
+    .appointment-table td {
+        padding: 4px 4px;
+        font-size: 14px;
+    }
+    .appointment-table td:first-child {
+        font-weight: bold;
+        color: #555;
+        width: 40%;
+    }
+    .appointment-table td:last-child {
+        text-align: right;
+        width: 60%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="document-title">Comprobante de Cita</div>
+    <div class="document-subtitle" th:text="'Nº: CITA-' + ${appointment.appointmentId}"></div>
+
+    <div class="section">
+      <div class="section-title">Información del Paciente</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label" th:text="'Nombre completo: ' + ${appointment.patient.profile.firstName + ' ' + appointment.patient.profile.lastName}"></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label" th:text="'DNI: ' + ${appointment.patient.profile.dni}"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Detalles de la Cita</div>
+      <div class="appointment-details">
+        <table class="appointment-table">
+            <tr>
+                <td>Servicio:</td>
+                <td th:text="${appointment.service.name}"></td>
+            </tr>
+            <tr>
+                <td>Fecha:</td>
+                <td th:text="${#temporals.format(appointment.appointmentDate, 'dd/MM/yyyy')}"></td>
+            </tr>
+            <tr>
+                <td>Hora:</td>
+                <td th:text="${#temporals.format(appointment.appointmentDate, 'HH:mm')}"></td>
+            </tr>
+            <tr>
+                <td>Dentista:</td>
+                <td th:text="${appointment.dentist.profile.firstName + ' ' + appointment.dentist.profile.lastName}"></td>
+            </tr>
+            <tr>
+                <td>Estado:</td>
+                <td th:text="${appointment.status}"></td>
+            </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section" th:if="${appointment.payment != null}">
+      <div class="section-title">Información de Pago</div>
+      <div class="payment-info">
+        <table class="appointment-table">
+            <tr th:if="${appointment.payment.paymentMethod != null}">
+                <td>Método de pago:</td>
+                <td th:text="${appointment.payment.paymentMethod}"></td>
+            </tr>
+            <tr>
+                <td>Fecha de pago:</td>
+                <td th:text="${appointment.payment.paymentDate != null ? #temporals.format(appointment.payment.paymentDate, 'dd/MM/yyyy HH:mm') : 'Pendiente'}"></td>
+            </tr>
+            <tr class="total-row">
+                <td><strong>TOTAL:</strong></td>
+                <td><strong th:text="'S/ ' + ${#numbers.formatDecimal(appointment.payment.amount, 1, 2)}"></strong></td>
+            </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="notes-title">Nota importante: Por favor, llegue 10 minutos antes de su cita.</div>
+
+    </div>
+
+
+    <div class="footer">
+      Este documento es un comprobante oficial de su cita.<br />
+      © <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}"></span> Dental Esthetic - Todos los derechos reservados.
+    </div>
+  </div>
+</body>
+</html>

@@ -14,6 +14,7 @@ import com.develop.dental_api.model.dto.LoginResponseDTO;
 import com.develop.dental_api.model.dto.MessageResponseDTO;
 import com.develop.dental_api.model.dto.RegisterUserRequestDTO;
 import com.develop.dental_api.model.dto.RegisterUserResponseDTO;
+import com.develop.dental_api.model.dto.ResetPasswordDTO;
 import com.develop.dental_api.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
@@ -44,5 +45,10 @@ public class AuthController {
     @PostMapping("/change-password")
     public ResponseEntity<MessageResponseDTO> changePassword(@RequestBody ChangePasswordDTO request) {
         return ResponseEntity.ok(authService.changePassword(request));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<MessageResponseDTO> resetPassword(@RequestBody ResetPasswordDTO request) {
+        return ResponseEntity.ok(authService.resetPassword(request));
     }
 }

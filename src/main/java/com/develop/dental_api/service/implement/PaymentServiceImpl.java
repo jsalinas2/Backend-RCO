@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.develop.dental_api.model.dto.PaymentDetailDTO;
 import com.develop.dental_api.model.dto.PaymentRequestDTO;
 import com.develop.dental_api.model.dto.PaymentResponseDTO;
+import com.develop.dental_api.model.dto.UserPaymentHistoryDTO;
 import com.develop.dental_api.model.entity.Appointment;
 import com.develop.dental_api.model.entity.Payment;
 import com.develop.dental_api.model.mapper.PaymentMapper;
@@ -36,8 +38,20 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentMapper paymentMapper;
     private final AppointmentRepository appointmentRepository;
 
-    //@Value("${mercadopago.access.token}")
-    private String mercadoPagoToken="TEST-7258364631669820-050611-6dac61aefb032d3bdcd16b3fe2c965b9-2422988911";
+    @Value("${app.mercadopago.access-token}")
+    private String mercadoPagoToken;
+
+    @Value("${app.mercadopago.success-url}")
+    private String successUrl;
+
+    @Value("${app.mercadopago.failure-url}")
+    private String failureUrl;
+
+    @Value("${app.mercadopago.pending-url}")
+    private String pendingUrl;
+
+    @Value("${app.mercadopago.notification-url}")
+    private String notificationUrl;
 
     @Override
     public String registerPayment(Integer appointmentId) throws Exception {
@@ -55,22 +69,27 @@ public class PaymentServiceImpl implements PaymentService {
                                 .title("Pago por servicio: " + appointment.getService().getName())
                                 .quantity(1)
                                 .unitPrice(amount)
-                                .currencyId("PEN") // o "USD" si aplica
+                                .currencyId("PEN")
                                 .build()
                 ))
                 .backUrls(PreferenceBackUrlsRequest.builder()
-                        .success("https://odontologiaweb.netlify.app/payment-success")
-                        .failure("https://www.google.com.pe/")
-                        .pending("https://www.google.com.pe/")
+                        .success(successUrl)
+                        .failure(failureUrl)
+                        .pending(pendingUrl)
                         .build())
                 .autoReturn("approved")
-                .notificationUrl("https://backend-rco.onrender.com/api/v1/api/webhook")
+                .notificationUrl(notificationUrl)
                 .build();
 
         PreferenceClient client = new PreferenceClient();
         Preference preference = client.create(preferenceRequest);
 
         // Guardar el pago como PENDING
+        // Verificar si ya existe un pago para esta cita
+        if (paymentRepository.findByAppointment(appointment).isPresent()) {
+            throw new RuntimeException("Esta cita ya tiene un pago registrado");
+        }
+
         Payment payment = new Payment();
         payment.setAppointment(appointment);
         payment.setAmount(amount);
@@ -109,5 +128,22 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new RuntimeException("Pago no encontrado"));
         return paymentMapper.toPaymentDetailDTO(payment);
+    }
+
+    @Override
+    public List<UserPaymentHistoryDTO> getUserPayments(Integer userId) {
+        List<Payment> payments = paymentRepository.findByAppointment_Patient_UserId(userId);
+        
+        return payments.stream()
+            .map(payment -> {
+                UserPaymentHistoryDTO dto = new UserPaymentHistoryDTO();
+                dto.setPaymentId(payment.getPaymentId());
+                dto.setPaymentDate(payment.getPaymentDate());
+                dto.setServiceName(payment.getAppointment().getService().getName());
+                dto.setAmount(payment.getAmount());
+                dto.setStatus(payment.getStatus());
+                return dto;
+            })
+            .collect(Collectors.toList());
     }
 }

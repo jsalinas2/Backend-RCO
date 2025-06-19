@@ -55,4 +55,6 @@ public class User {
     @OneToMany(mappedBy = "patient")
     private List<Appointment> patientAppointments;
 
+    private String recoveryToken;
+    private LocalDateTime recoveryTokenExpiry;
 }

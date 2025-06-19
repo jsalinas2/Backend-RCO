@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.develop.dental_api.model.dto.ChangePasswordDTO;
 import com.develop.dental_api.model.dto.MessageResponseDTO;
 import com.develop.dental_api.model.dto.UpdateProfileDTO;
 import com.develop.dental_api.model.dto.UserAppointmentDTO;
@@ -49,4 +50,6 @@ public class UserController {
             @RequestBody UpdateProfileDTO request) {
         return ResponseEntity.ok(userService.updateProfile(user_id, request));
     }
+
+
 }

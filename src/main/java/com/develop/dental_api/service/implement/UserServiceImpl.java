@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.develop.dental_api.model.dto.ChangePasswordDTO;
 import com.develop.dental_api.model.dto.MessageResponseDTO;
 import com.develop.dental_api.model.dto.UpdateProfileDTO;
 import com.develop.dental_api.model.dto.UserAppointmentDTO;
@@ -69,4 +70,6 @@ public class UserServiceImpl implements UserService {
         profileRepository.save(profile);
         return new MessageResponseDTO("Perfil actualizado");
     }
+
+
 }

@@ -6,6 +6,7 @@ import com.develop.dental_api.model.dto.LoginResponseDTO;
 import com.develop.dental_api.model.dto.MessageResponseDTO;
 import com.develop.dental_api.model.dto.RegisterUserRequestDTO;
 import com.develop.dental_api.model.dto.RegisterUserResponseDTO;
+import com.develop.dental_api.model.dto.ResetPasswordDTO;
 
 public interface AuthService {
 
@@ -16,4 +17,6 @@ public interface AuthService {
     MessageResponseDTO sendRecoveryEmail(String email);
 
     MessageResponseDTO changePassword(ChangePasswordDTO dto);
+
+    MessageResponseDTO resetPassword(ResetPasswordDTO dto);
 }

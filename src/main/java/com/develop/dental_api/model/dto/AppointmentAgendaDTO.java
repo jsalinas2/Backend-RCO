@@ -11,5 +11,6 @@ public class AppointmentAgendaDTO {
     private String service;
     private String status;
     private String patientName;
+    private String patientDni;
     private String dentistName;
 }

@@ -5,13 +5,16 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.develop.dental_api.model.dto.ClinicalRecordCompleteDTO;
 import com.develop.dental_api.model.dto.ClinicalRecordDTO;
 import com.develop.dental_api.model.dto.ClinicalRecordRequestDTO;
 import com.develop.dental_api.model.dto.MessageResponseDTO;
+import com.develop.dental_api.model.dto.UpdateClinicalRecordDTO;
 import com.develop.dental_api.service.ClinicalRecordService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,8 +33,20 @@ public class ClinicalRecordController {
     }
 
     @GetMapping("/{user_id}")
-    public ResponseEntity<ClinicalRecordDTO> get(@PathVariable Integer user_id) {
+    public ResponseEntity<ClinicalRecordCompleteDTO> get(@PathVariable Integer user_id) {
         return ResponseEntity.ok(clinicalRecordService.getRecordByUser(user_id));
+    }
+
+    @GetMapping("/dni/{dni}")
+    public ResponseEntity<ClinicalRecordCompleteDTO> getByDni(@PathVariable String dni) {
+        return ResponseEntity.ok(clinicalRecordService.getCompleteRecordByDni(dni));
+    }
+
+    @PutMapping("/{clinical_id}")
+    public ResponseEntity<MessageResponseDTO> updateClinicalRecord(
+            @PathVariable Integer clinical_id,
+            @RequestBody UpdateClinicalRecordDTO request) {
+        return ResponseEntity.ok(clinicalRecordService.updateRecord(clinical_id, request));
     }
 }
 

@@ -29,6 +29,7 @@ public interface UserMapper {
     @Mapping(target = "lastName", source = "profile.lastName")
     @Mapping(target = "phone", source = "profile.phone")
     @Mapping(target = "birthDate", source = "profile.birthDate")
+    @Mapping(target = "email", source = "user.email")
     @Mapping(target = "dni", source = "profile.dni")
     @Mapping(target = "role", source = "user.role")
     UserProfileDTO toUserProfileDTO(User user, Profile profile);

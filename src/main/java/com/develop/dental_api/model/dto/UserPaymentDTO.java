@@ -12,4 +12,5 @@ public class UserPaymentDTO {
     private BigDecimal amount;
     private LocalDateTime paymentDate;
     private String status;
+    private String serviceName;
 }

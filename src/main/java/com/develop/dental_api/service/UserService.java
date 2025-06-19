@@ -2,6 +2,7 @@ package com.develop.dental_api.service;
 
 import java.util.List;
 
+import com.develop.dental_api.model.dto.ChangePasswordDTO;
 import com.develop.dental_api.model.dto.MessageResponseDTO;
 import com.develop.dental_api.model.dto.UpdateProfileDTO;
 import com.develop.dental_api.model.dto.UserAppointmentDTO;
@@ -17,4 +18,5 @@ public interface UserService {
     UserProfileDTO getProfile(Integer userId);
 
     MessageResponseDTO updateProfile(Integer userId, UpdateProfileDTO dto);
+
 }

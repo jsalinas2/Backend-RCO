@@ -21,5 +21,6 @@ public interface PaymentMapper {
 
     @Mapping(target = "paymentId", source = "paymentId")
     @Mapping(target = "appointmentId", source = "appointment.appointmentId")
+    @Mapping(target = "serviceName", source = "appointment.service.name")
     UserPaymentDTO toUserPaymentDTO(Payment payment);
 }

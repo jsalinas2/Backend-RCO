@@ -16,5 +16,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     List<Appointment> findByPatient_UserId(Integer id);
     List<Appointment> findByDentistAndAppointmentDateBetween(User dentist, LocalDateTime start, LocalDateTime end);
     boolean existsByDentistAndAppointmentDateBetween(User dentist, LocalDateTime start, LocalDateTime end);
+    
 
 }

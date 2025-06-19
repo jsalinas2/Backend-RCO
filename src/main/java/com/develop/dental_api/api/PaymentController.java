@@ -1,5 +1,6 @@
 package com.develop.dental_api.api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.develop.dental_api.model.dto.PaymentDetailDTO;
 import com.develop.dental_api.model.dto.PaymentRequestDTO;
 import com.develop.dental_api.model.dto.PaymentResponseDTO;
+import com.develop.dental_api.model.dto.UserPaymentHistoryDTO;
 import com.develop.dental_api.service.PaymentService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,5 +43,10 @@ public class PaymentController {
     @GetMapping("/{payment_id}")
     public ResponseEntity<PaymentDetailDTO> getPayment(@PathVariable Integer payment_id) {
         return ResponseEntity.ok(paymentService.getPaymentDetail(payment_id));
+    }
+
+    @GetMapping("/user/{user_id}")
+    public ResponseEntity<List<UserPaymentHistoryDTO>> getUserPayments(@PathVariable Integer user_id) {
+        return ResponseEntity.ok(paymentService.getUserPayments(user_id));
     }
 }
