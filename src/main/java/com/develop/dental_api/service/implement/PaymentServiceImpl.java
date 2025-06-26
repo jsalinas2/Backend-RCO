@@ -139,7 +139,7 @@ public class PaymentServiceImpl implements PaymentService {
 */
 
 
-                Optional<Payment> optional = paymentRepository.findById(Integer.valueOf(paymentId));
+                Optional<Payment> optional = paymentRepository.findByAppointment_AppointmentId(Integer.valueOf(paymentId));
                 Payment pago = optional.get();
                 Appointment appointment = pago.getAppointment();
                 String email = appointment.getPatient().getEmail();
