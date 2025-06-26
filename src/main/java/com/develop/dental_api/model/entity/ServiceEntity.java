@@ -19,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "services")
-public class Service {
+public class ServiceEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +42,9 @@ public class Service {
 
     @OneToMany(mappedBy = "service")
     private List<TreatmentDone> treatmentsDone;
+
+    @Column(nullable = false)
+    private Boolean active = true; // Nuevo campo para eliminación lógica
 
 }
 

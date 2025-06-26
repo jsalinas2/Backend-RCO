@@ -9,7 +9,7 @@ import com.develop.dental_api.model.dto.AppointmentRequestDTO;
 import com.develop.dental_api.model.dto.AppointmentResponseDTO;
 import com.develop.dental_api.model.dto.UserAppointmentDTO;
 import com.develop.dental_api.model.entity.Appointment;
-import com.develop.dental_api.model.entity.Service;
+import com.develop.dental_api.model.entity.ServiceEntity;
 import com.develop.dental_api.model.entity.User;
 
 @Mapper(componentModel = "spring")
@@ -17,7 +17,7 @@ public interface AppointmentMapper {
 
     @Mapping(target = "appointmentId", ignore = true)
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
-    Appointment toAppointmentEntity(AppointmentRequestDTO dto, User patient, User dentist, Service service);
+    Appointment toAppointmentEntity(AppointmentRequestDTO dto, User patient, User dentist, ServiceEntity service);
 
     @Mapping(target = "service", expression = "java(appointment.getService().getName())")
     @Mapping(target = "patientName", expression = "java(fullName(appointment.getPatient()))")

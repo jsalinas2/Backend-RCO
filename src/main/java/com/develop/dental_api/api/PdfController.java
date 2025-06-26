@@ -1,5 +1,7 @@
 package com.develop.dental_api.api;
 
+import java.math.BigDecimal;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import com.develop.dental_api.model.entity.ClinicalRecord;
 import com.develop.dental_api.repository.AppointmentRepository;
 import com.develop.dental_api.repository.ClinicalRecordRepository;
 import com.develop.dental_api.service.PdfGeneratorService;
+import com.tenpisoft.n2w.MoneyConverters;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -76,7 +79,11 @@ public class PdfController {
         context.setVariable("payment", appointment.getPayment()); // Datos del pago
         context.setVariable("currentDate", java.time.LocalDateTime.now());
 
-        byte[] pdf = pdfGeneratorService.generatePdf("comprobante-cita-pdf", context);
+        MoneyConverters converter = MoneyConverters.SPANISH_BANKING_MONEY_VALUE;
+        String moneyAsWords = converter.asWords(new BigDecimal("" + appointment.getPayment().getAmount()));
+        context.setVariable("montoLetras", moneyAsWords.toUpperCase());
+
+        byte[] pdf = pdfGeneratorService.generatePdf("comprobante-venta-pdf", context);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);

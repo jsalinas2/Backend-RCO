@@ -5,21 +5,21 @@ import com.develop.dental_api.model.dto.AppointmentRequestDTO;
 import com.develop.dental_api.model.dto.AppointmentResponseDTO;
 import com.develop.dental_api.model.dto.UserAppointmentDTO;
 import com.develop.dental_api.model.entity.Appointment;
-import com.develop.dental_api.model.entity.Service;
+import com.develop.dental_api.model.entity.ServiceEntity;
 import com.develop.dental_api.model.entity.User;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-19T13:42:59-0500",
+    date = "2025-06-26T05:07:01-0500",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Eclipse Adoptium)"
 )
 @Component
 public class AppointmentMapperImpl implements AppointmentMapper {
 
     @Override
-    public Appointment toAppointmentEntity(AppointmentRequestDTO dto, User patient, User dentist, Service service) {
+    public Appointment toAppointmentEntity(AppointmentRequestDTO dto, User patient, User dentist, ServiceEntity service) {
         if ( dto == null && patient == null && dentist == null && service == null ) {
             return null;
         }

@@ -49,4 +49,15 @@ public class PaymentController {
     public ResponseEntity<List<UserPaymentHistoryDTO>> getUserPayments(@PathVariable Integer user_id) {
         return ResponseEntity.ok(paymentService.getUserPayments(user_id));
     }
+
+    @PostMapping("/update-status/{paymentId}")
+    public ResponseEntity<?> updatePaymentStatus(@PathVariable String paymentId) {
+        try {
+            paymentService.updatePaymentStatus(paymentId);
+            return ResponseEntity.ok(Map.of("message", "Estado de pago actualizado y correo enviado si corresponde."));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
 }

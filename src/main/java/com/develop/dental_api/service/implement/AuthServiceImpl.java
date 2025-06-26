@@ -12,6 +12,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.develop.dental_api.model.dto.ChangePasswordDTO;
 import com.develop.dental_api.model.dto.LoginRequestDTO;
@@ -46,6 +50,7 @@ public class AuthServiceImpl implements AuthService {
     private PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final JavaMailSender mailSender;
+    private final SpringTemplateEngine templateEngine;
     
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -80,6 +85,22 @@ public class AuthServiceImpl implements AuthService {
         clinicalRecord.setUser(user);
         clinicalRecord.setCreatedAt(LocalDateTime.now());
         clinicalRecordRepository.save(clinicalRecord);
+
+        // Enviar correo de bienvenida
+        try {
+            Context context = new Context();
+            context.setVariable("nombre", profile.getFirstName());
+
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(user.getEmail());
+            helper.setSubject("Bienvenido a Dental Esthetic");
+            helper.setText(templateEngine.process("correo-bienvenida.html", context), true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace(); // Loguea el error, pero no detiene el registro
+        }
 
         return new RegisterUserResponseDTO("Usuario registrado exitosamente", user.getUserId());
     }
@@ -118,15 +139,25 @@ public class AuthServiceImpl implements AuthService {
         user.setRecoveryTokenExpiry(LocalDateTime.now().plusHours(1)); // Token válido por 1 hora
         userRepository.save(user);
 
-        // Enviar email
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(email);
-        message.setSubject("Recuperación de Contraseña");
-        message.setText("Para recuperar tu contraseña, ingresa al siguiente enlace:\n" +
-                url + "/reset-password?token=" + recoveryToken);
+        // Construir el link de recuperación
+        String resetLink = url + "/reset-password?token=" + recoveryToken;
 
-        mailSender.send(message);
+        // Enviar email HTML
+        try {
+            Context context = new Context();
+            context.setVariable("resetLink", resetLink);
+
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(email);
+            helper.setSubject("Recuperación de Contraseña");
+            helper.setText(templateEngine.process("correo-recuperacion.html", context), true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("No se pudo enviar el correo de recuperación");
+        }
 
         return new MessageResponseDTO("Se ha enviado un correo con las instrucciones para recuperar tu contraseña");
     }

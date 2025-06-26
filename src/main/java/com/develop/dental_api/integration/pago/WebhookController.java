@@ -42,12 +42,12 @@ public class WebhookController {
     @PostMapping
     public ResponseEntity<Void> recibirNotificacion(@RequestBody Map<String, Object> payload) {
         try {
-            if ("payment".equals(payload.get("type"))) {
+/*             if ("payment".equals(payload.get("type"))) {
                 Map<String, Object> data = (Map<String, Object>) payload.get("data");
                 String paymentId = String.valueOf(data.get("id"));
                 paymentService.updatePaymentStatus(paymentId);
                 System.out.println("paymentid: " + paymentId);
-            }
+            } */
         } catch (Exception e) {
             e.printStackTrace(); // Log en producción
         }

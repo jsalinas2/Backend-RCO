@@ -13,4 +13,5 @@ import com.develop.dental_api.model.entity.User;
 @Repository
 public interface AvailabilityRepository extends JpaRepository<Availability, Integer> {
     List<Availability> findAllByDentistAndDayOfWeek(User dentist, DayOfWeek dayOfWeek);
+    List<Availability> findAllByDentist(User dentist);
 }

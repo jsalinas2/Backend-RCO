@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Boleta de Venta Electrónica</title>
+  <style>
+    @page { size: A4; margin: 1cm; }
+    body { font-family: Arial, sans-serif; color: #222; font-size: 12px; }
+    .header-table { width: 100%; }
+    .header-table td { vertical-align: top; }
+    .logo { width: 70px; }
+    .empresa-info { font-size: 13px; }
+    .boleta-box {
+      border: 1px solid #333;
+      padding: 6px 10px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .cliente-table { margin-top: 10px; margin-bottom: 10px; }
+    .cliente-table td { padding: 2px 6px; }
+    .table-title {
+      background: #8c4b13;
+      color: #fff;
+      font-weight: bold;
+      font-size: 13px;
+      text-align: center;
+    }
+    .detalle-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    .detalle-table th, .detalle-table td {
+      border: 1px solid #000000;
+      padding: 4px 6px;
+      font-size: 12px;
+      text-align: center;
+    }
+    .detalle-table th { background: #858585; color: #fffdfd; }
+    .detalle-table .total-row td {
+      background: #ffffff;
+      font-weight: bold;
+      color: #000000;
+      border-top: 2px solid #000000;
+    }
+    .monto-letras { margin: 10px 0 0 0; font-size: 12px; }
+    .resumen-table {
+      width: 100%;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    .resumen-table td { padding: 2px 6px; }
+    .resumen-table .label { text-align: right; color: #555; }
+    .resumen-table .value { text-align: right; }
+    .footer {
+      margin-top: 20px;
+      font-size: 10px;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <table class="header-table">
+    <tr>
+      <td style="width: 10%;">
+        <img class="logo" src="../static/img/cv2_logo.png" alt="Logo"/>
+      </td>
+      <td class="empresa-info" style="width: 40%;">
+        <strong>Dental Esthetic</strong><br/>
+        Telefono +51 987 654 321<br/>
+        Odontologia
+      </td>
+      <td style="width: 30%;">
+        <div class="boleta-box">
+          R.U.C. No. <span th:text="10123456787">10123456787</span><br/>
+          BOLETA DE VENTA<br/>
+          ELECTRONICA<br/>
+          <span th:text="'B011-' + ${appointment.appointmentId}">B011-</span>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <table class="cliente-table">
+    <tr>
+      <td><strong>NOMBRE:</strong></td>
+      <td th:text="${appointment.patient.profile.firstName + ' ' + appointment.patient.profile.lastName}">Nombre Cliente</td>
+    </tr>
+    <tr>
+      <td><strong>DNI:</strong></td>
+      <td th:text="${appointment.patient.profile.dni}">12345678</td>
+    </tr>
+    <tr>
+      <td><strong>FECHA EMISION:</strong></td>
+      <td th:text="${appointment.payment.paymentDate != null ? #temporals.format(appointment.payment.paymentDate, 'dd/MM/yyyy HH:mm') : 'Pendiente'}">01/01/2024</td>
+    </tr>
+    <tr>
+      <td><strong>TIPO MONEDA:</strong></td>
+      <td th:text="PEN">PEN</td>
+    </tr>
+  </table>
+
+  <table class="detalle-table">
+    <tr>
+      <th>N</th>
+      <th>DESCRIPCION</th>
+      <th>CANTIDAD</th>
+      <th>PRECIO UNITARIO</th>
+      <th>PRECIO VENTA</th>
+    </tr>
+    <tr>
+      <td th:text="${codigo}">1</td>
+      <td th:text="${appointment.service.name}">Descripción del servicio</td>
+      <td th:text="1">1</td>
+      <td th:text="'S/ ' + ${#numbers.formatDecimal(appointment.payment.amount, 1, 2)}">S/ 20.00</td>
+      <td th:text="'S/ ' + ${#numbers.formatDecimal(appointment.payment.amount, 1, 2)}">S/ 20.00</td>
+    </tr>
+    <tr class="total-row">
+      <td colspan="4" style="text-align:right;">TOTAL</td>
+      <td th:text="'S/ ' + ${#numbers.formatDecimal(appointment.payment.amount, 1, 2)}">S/ 20.00</td>
+    </tr>
+  </table>
+
+  <div class="monto-letras">
+    Son : <span th:text="${montoLetras} + ' SOLES'">VEINTE Y 00/100 SOLES</span>
+  </div>
+
+  <table class="resumen-table">
+    <tr>
+      <td class="label">Subtotal</td>
+      <td class="value" th:text="'S/ ' + ${#numbers.formatDecimal(appointment.payment.amount, 1, 2)}">S/ 0.00</td>
+    </tr>
+    <tr>
+      <td class="label">IGV</td>
+      <td class="value" >S/ 0.00</td>
+    </tr>
+    <tr>
+      <td class="label"><strong>Importe Total</strong></td>
+      <td class="value" th:text="'S/ ' + ${#numbers.formatDecimal(appointment.payment.amount, 1, 2)}">S/ 20.00</td>
+    </tr>
+  </table>
+
+  <div class="footer">
+    Documento generado electrónicamente.<br/>
+    © <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}"></span> Dental Esthetic.
+  </div>
+</body>
+</html>

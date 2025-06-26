@@ -52,7 +52,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     User dentist = userRepository.findById(dto.getDentistId())
         .orElseThrow(() -> new IllegalArgumentException("Dentista no encontrado"));
 
-    com.develop.dental_api.model.entity.Service service = serviceRepository.findById(dto.getServiceId())
+    com.develop.dental_api.model.entity.ServiceEntity service = serviceRepository.findById(dto.getServiceId())
         .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado"));
 
     LocalDateTime startDateTime = dto.getAppointmentDate();
@@ -72,6 +72,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         !appointmentTime.isBefore(dispo.getStartTime()) &&
         !appointmentTime.plusHours(1).isAfter(dispo.getEndTime())
     );
+    System.out.println("Dentro de rango: " + dentroDeRango);
+    System.out.println("Horario de cita: " + appointmentTime);
+    System.out.println("Disponibilidades: " + disponibilidades);
     
     if (!dentroDeRango) {
         throw new IllegalArgumentException("El horario no está dentro de ningún rango disponible del dentista.");
@@ -80,6 +83,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     List<Appointment> overlappingAppointments = appointmentRepository
         .findByDentistAndAppointmentDateBetween(dentist, startDateTime, endDateTime.minusNanos(1));
+
+    // Imprime los valores para depuración
+    System.out.println("Buscando traslapes entre: " + startDateTime + " y " + endDateTime.minusNanos(1));
+    System.out.println("Citas encontradas: " + overlappingAppointments.size());
+    for (Appointment a : overlappingAppointments) {
+        System.out.println("Cita encontrada: id=" + a.getAppointmentId() +
+            ", inicio=" + a.getAppointmentDate() +
+            ", paciente=" + a.getPatient().getProfile().getFirstName() +
+            ", estado=" + a.getStatus());
+    }
 
     if (!overlappingAppointments.isEmpty()) {
         throw new IllegalArgumentException("Este horario ya está reservado.");

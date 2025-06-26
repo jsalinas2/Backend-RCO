@@ -7,7 +7,7 @@ import com.develop.dental_api.model.dto.TreatmentDoneDTO;
 import com.develop.dental_api.model.dto.UserProfileDTO;
 import com.develop.dental_api.model.entity.ClinicalRecord;
 import com.develop.dental_api.model.entity.Profile;
-import com.develop.dental_api.model.entity.Service;
+import com.develop.dental_api.model.entity.ServiceEntity;
 import com.develop.dental_api.model.entity.TreatmentDone;
 import com.develop.dental_api.model.entity.User;
 import java.time.LocalDate;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-19T13:42:59-0500",
+    date = "2025-06-26T05:07:02-0500",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.4 (Eclipse Adoptium)"
 )
 @Component
@@ -173,7 +173,7 @@ public class ClinicalRecordMapperImpl implements ClinicalRecordMapper {
     }
 
     private String treatmentDoneServiceName(TreatmentDone treatmentDone) {
-        Service service = treatmentDone.getService();
+        ServiceEntity service = treatmentDone.getService();
         if ( service == null ) {
             return null;
         }
